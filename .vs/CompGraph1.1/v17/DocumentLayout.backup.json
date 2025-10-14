@@ -1,0 +1,71 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\vitam\\source\\repos\\CompGraph1.1\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9AB6EF-15C4-4678-AEF4-4B3DF8D984CD}|CompGraph1.1\\CompGraph1.1.vcxproj|C:\\Users\\vitam\\source\\repos\\CompGraph1.1\\CompGraph1.1\\form.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{AB9AB6EF-15C4-4678-AEF4-4B3DF8D984CD}|CompGraph1.1\\CompGraph1.1.vcxproj|solutionrelative:CompGraph1.1\\form.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9AB6EF-15C4-4678-AEF4-4B3DF8D984CD}|CompGraph1.1\\CompGraph1.1.vcxproj|C:\\Users\\vitam\\source\\repos\\CompGraph1.1\\CompGraph1.1\\main.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{AB9AB6EF-15C4-4678-AEF4-4B3DF8D984CD}|CompGraph1.1\\CompGraph1.1.vcxproj|solutionrelative:CompGraph1.1\\main.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9AB6EF-15C4-4678-AEF4-4B3DF8D984CD}|CompGraph1.1\\CompGraph1.1.vcxproj|C:\\Users\\vitam\\source\\repos\\CompGraph1.1\\CompGraph1.1\\form.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{AB9AB6EF-15C4-4678-AEF4-4B3DF8D984CD}|CompGraph1.1\\CompGraph1.1.vcxproj|solutionrelative:CompGraph1.1\\form.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "form.c",
+              "DocumentMoniker": "C:\\Users\\vitam\\source\\repos\\CompGraph1.1\\CompGraph1.1\\form.c",
+              "RelativeDocumentMoniker": "CompGraph1.1\\form.c",
+              "ToolTip": "C:\\Users\\vitam\\source\\repos\\CompGraph1.1\\CompGraph1.1\\form.c",
+              "RelativeToolTip": "CompGraph1.1\\form.c",
+              "ViewState": "AgIAAAIAAAAAAAAAAAArwCcAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2025-10-07T10:50:29.216Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "form.h",
+              "DocumentMoniker": "C:\\Users\\vitam\\source\\repos\\CompGraph1.1\\CompGraph1.1\\form.h",
+              "RelativeDocumentMoniker": "CompGraph1.1\\form.h",
+              "ToolTip": "C:\\Users\\vitam\\source\\repos\\CompGraph1.1\\CompGraph1.1\\form.h",
+              "RelativeToolTip": "CompGraph1.1\\form.h",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-10-08T18:57:18.751Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "main.c",
+              "DocumentMoniker": "C:\\Users\\vitam\\source\\repos\\CompGraph1.1\\CompGraph1.1\\main.c",
+              "RelativeDocumentMoniker": "CompGraph1.1\\main.c",
+              "ToolTip": "C:\\Users\\vitam\\source\\repos\\CompGraph1.1\\CompGraph1.1\\main.c",
+              "RelativeToolTip": "CompGraph1.1\\main.c",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAABMAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2025-10-07T10:44:06.969Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

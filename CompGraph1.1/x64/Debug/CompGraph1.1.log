@@ -1,0 +1,7 @@
+﻿  form.c
+  main.c
+C:\Users\vitam\source\repos\CompGraph1.1\CompGraph1.1\main.c(16,4): warning C4013: 'getVertex' undefined; assuming extern returning int
+C:\Users\vitam\source\repos\CompGraph1.1\CompGraph1.1\main.c(54,18): warning C4113: 'void (__cdecl *)()' differs in parameter lists from 'void (__cdecl *)(void)'
+C:\Users\vitam\source\repos\CompGraph1.1\CompGraph1.1\main.c(57,2): warning C4013: 'printf' undefined; assuming extern returning int
+  Generating Code...
+LINK : fatal error LNK1104: cannot open file 'freeglut.lib'
