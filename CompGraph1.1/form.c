@@ -1,97 +1,176 @@
 #include "form.h"
 #include <stdlib.h>
 #include <stdio.h>
-#include <gl/glut.h>
+#include <time.h>
+#include <GL/glut.h>
 
+int formTypeN = 3;
 
-// this struct is encapsulated
+// internal representation
+typedef enum formType {
+    RECTANGLE,
+    SQUARE,
+    TRIANGLE,
+    LINE
+} FormType;
+
 struct form {
-	float x, y;             // initial point of the form
-	float xSize, ySize;     // sides 
-	float r, g, b;         // color
-	float rBorder, gBorder, bBorder;         // color
-
+    float x, y;                 // initial point
+    float xSize, ySize;         // dimensions
+    float r, g, b;              // fill color
+    float rBorder, gBorder, bBorder; // border color
+    FormType formType;
 };
 
-Form newForm(float x, float y, float xSize, float ySize) {
-	Form f = (Form)malloc(sizeof(struct form));
+// --- constructors ---
 
-	f->x = x;
-	f->y = y;
-	f->xSize = xSize;
-	f->ySize = ySize;
-	f->r = (float)rand() / ((float)RAND_MAX);
-	f->g = (float)rand() / ((float)RAND_MAX);
-	f->b = (float)rand() / ((float)RAND_MAX);
+Form newForm(float x, float y, float xSize, float ySize, int formType) {
+    Form f = (Form)malloc(sizeof(struct form));
 
-	f->rBorder = (float)rand() / ((float)RAND_MAX);
-	f->gBorder = (float)rand() / ((float)RAND_MAX);
-	f->bBorder = (float)rand() / ((float)RAND_MAX);
-	
+    f->x = x;
+    f->y = y;
+    f->xSize = xSize;
+    f->ySize = ySize;
 
-	return f;
+    // random colors
+    f->r = (float)rand() / RAND_MAX;
+    f->g = (float)rand() / RAND_MAX;
+    f->b = (float)rand() / RAND_MAX;
+
+    f->rBorder = (float)rand() / RAND_MAX;
+    f->gBorder = (float)rand() / RAND_MAX;
+    f->bBorder = (float)rand() / RAND_MAX;
+
+    f->formType = formType; //Selecionar forma aleatoria
+
+    return f;
 }
 
 Form newFormC(float x, float y, float xSize, float ySize) {
-	return newForm(x - (xSize / 2), y - (ySize / 2), xSize, ySize);
+    return newForm(x - (xSize / 2), y - (ySize / 2), xSize, ySize);
 }
 
 void deleteForm(Form f) {
-	free(f);
+    free(f);
 }
 
 void updateForm(Form f, float dx, float dy) {
-	f->x += dx;
-	f->y += dy;
+    f->x += dx;
+    f->y += dy;
 }
-
 
 void printfForm(Form f) {
-	printf("Graphical Form BBox: (%.2f,%.2f), (%.2f, %.2f), (%.2f, %.2f), (%.2f, %.2f)\t",
-		f->x, f->y,
-		f->x, f->y + f->ySize,
-		f->x + f->xSize, f->y + f->ySize,
-		f->x + f->xSize, f->y);
+    printf("Form: Pos(%.2f, %.2f) Size(%.2f, %.2f)\n",
+        f->x, f->y, f->xSize, f->ySize);
+}
 
+//---- Draw Type Form -----
+void createRetangle(Form f){
+    // Fill
+    glBegin(GL_POLYGON);
+    glVertex2f(f->x, f->y);
+    glVertex2f(f->x, f->y + f->ySize);
+    glVertex2f(f->x + f->xSize, f->y + f->ySize);
+    glVertex2f(f->x + f->xSize, f->y);
+    glEnd();
 
-	printf("Center(%.2f,%.2f) Size{%.2f,%.2f}\n",
-		f->x + (f->xSize / 2), f->y + (f->ySize / 2),
-		f->xSize, f->ySize);
+    // Border
+    glColor3f(f->rBorder, f->gBorder, f->bBorder);
+    glLineWidth(2);
+    glBegin(GL_LINE_LOOP);
+    glVertex2f(f->x, f->y);
+    glVertex2f(f->x, f->y + f->ySize);
+    glVertex2f(f->x + f->xSize, f->y + f->ySize);
+    glVertex2f(f->x + f->xSize, f->y);
+    glEnd();
+
+    glFlush();
+}
+
+//Sentido contrario ao relogio
+void createSquare(Form f){
+    glBegin(GL_POLYGON);
+    glVertex2d(f->x, f->y); 
+    glVertex2d(f->x + f->xSize, f->y);
+    glVertex2d(f->x + f->xSize, f->y - f->ySize);
+    glVertex2d(f->x - f->xSize, f->y - f->ySize);
+    glEnd();
+}
+
+void createTriangle(Form f){
+    glBegin(GL_TRIANGLES);
+    glVertex2f(f->x, f->y + f->ySize);       
+    glVertex2f(f->x - f->xSize, f->y - f->ySize); 
+    glVertex2f(f->x + f->xSize, f->y - f->ySize); 
+    glEnd();
 
 }
 
+void createLine(Form f){
+    glBegin(GL_TRIANGLES);
+    glVertex2f(f->x - f->xSize, f->y - f->ySize); 
+    glVertex2f(f->x + f->xSize, f->y - f->ySize); 
+    glEnd();
+
+}
+// --- drawing ---
 
 void drawForm(Form f) {
-	glBegin(GL_POLYGON);
-	glColor3f(f->r, f->g, f->b);
-	glVertex2f(f->x, f->y);
-	glVertex2f(f->x, f->y + f->ySize);
-	glVertex2f(f->x + f->xSize, f->y + f->ySize);
-	glVertex2f(f->x + f->xSize, f->y);
-	glEnd();
 
-
-	glBegin(GL_LINE_LOOP);
-	glColor3f(f->rBorder, f->gBorder, f->bBorder);
-	glLineWidth(2);
-	glVertex2f(f->x, f->y);
-	glVertex2f(f->x, f->y + f->ySize);
-	glVertex2f(f->x + f->xSize, f->y + f->ySize);
-	glVertex2f(f->x + f->xSize, f->y);
-	glEnd();
-
-	glFlush();
+    switch (f->formType) {
+        case 0:
+			createRetangle(f);
+            break;
+        case 1:
+			createSquare(f);
+            break;
+        case 2:
+			createTriangle(f);
+            break;
+        case 3:
+			createLine(f);
+            break;
+    }
 }
 
-void initRandomForms(Form forms[], int n) {
-	srand(time(NULL));
+// --- random initialization ---
 
-	for (int i = 0; i < n; i++) {
-		float x = ((float)rand() / RAND_MAX) * 2.0 - 1.0; // [-1,1]
-		float y = ((float)rand() / RAND_MAX) * 2.0 - 1.0; // [-1,1]
-		float w = ((float)rand() / RAND_MAX) * 2.0 - 1.0; // [0.1,0.6]
-		float h = ((float)rand() / RAND_MAX) * 2.0 - 1.0; // [0.1,0.6]
+void initRandomForms(Form forms[], int n, int w, int h) {
+    srand((unsigned int)time(NULL));
+    for (int i = 0; i < n; i++) {
 
-		forms[i] = newForm(x, y, w, h);
-	}
+        int formType = rand() % formTypeN;
+
+        switch (formType)
+        {
+            case 0://Retangle
+            {
+                float xSize = ((float)rand() / RAND_MAX) * 150.0 + 50.0; // 150 a 50px
+                float ySize = ((float)rand() / RAND_MAX) * 150.0 + 50.0;
+
+                float x = ((float)rand() / RAND_MAX) * (w - xSize);
+                float y = ((float)rand() / RAND_MAX) * (h - ySize);
+
+                forms[i] = newForm(x, y, xSize, ySize, formType);
+
+                break;
+            }
+            case 1://Square
+			case 2 ://Trinagle
+            case 3://Line
+            {
+                float xSize = ((float)rand() / RAND_MAX) * 150.0 + 50.0;
+                float ySize = xSize;
+
+                float x = ((float)rand() / RAND_MAX) * (w - xSize);
+                float y = ((float)rand() / RAND_MAX) * (h - ySize);
+
+                forms[i] = newForm(x, y, xSize, ySize, formType);
+
+                break;
+			}
+            default:
+                break;
+        }
+    }
 }

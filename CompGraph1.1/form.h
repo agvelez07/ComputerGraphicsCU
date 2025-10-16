@@ -1,12 +1,6 @@
 #ifndef __FORM_H__
 #define __FORM_H__
 
-/*
-*  This interface provides clients with handles to form objects,
-*  but does not give any information about the internal representation.
-*  (The struct is specified only by its tag name.)
-*/
-
 typedef struct form* Form;
 
 // create a new form by given the original point and the sides
@@ -21,11 +15,13 @@ void deleteForm(Form f);
 // update a form position - moving by (dx,dy)
 void updateForm(Form f, float dx, float dy);
 
+// print form info
 void printfForm(Form f);
 
+// draw form
 void drawForm(Form f);
 
-void initRandomForms(Form forms[], int n);
-#endif
+// initialize random forms within screen bounds
+void initRandomForms(Form forms[], int n, int w, int h);
 
-#pragma once
+#endif
