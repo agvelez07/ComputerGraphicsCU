@@ -1,10 +1,6 @@
 ﻿  form.c
-C:\Users\vitam\source\repos\CompGraph1.1\CompGraph1.1\form.c(86,58): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\vitam\source\repos\CompGraph1.1\CompGraph1.1\form.c(87,58): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-  main.c
-C:\Users\vitam\source\repos\CompGraph1.1\CompGraph1.1\main.c(51,18): warning C4305: 'function': truncation from 'double' to 'GLclampf'
-C:\Users\vitam\source\repos\CompGraph1.1\CompGraph1.1\main.c(51,23): warning C4305: 'function': truncation from 'double' to 'GLclampf'
-C:\Users\vitam\source\repos\CompGraph1.1\CompGraph1.1\main.c(51,28): warning C4305: 'function': truncation from 'double' to 'GLclampf'
-C:\Users\vitam\source\repos\CompGraph1.1\CompGraph1.1\main.c(54,21): warning C4113: 'void (__cdecl *)()' differs in parameter lists from 'void (__cdecl *)(void)'
-  Generating Code...
+C:\Users\vitam\source\repos\CompGraph1.1\CompGraph1.1\form.c(27,6): warning C4029: declared formal parameter list different from definition
+C:\Users\vitam\source\repos\CompGraph1.1\CompGraph1.1\form.c(161,66): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\vitam\source\repos\CompGraph1.1\CompGraph1.1\form.c(162,66): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\vitam\source\repos\CompGraph1.1\CompGraph1.1\form.c(175,66): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
   CompGraph1.1.vcxproj -> C:\Users\vitam\source\repos\CompGraph1.1\Debug\CompGraph1.1.exe

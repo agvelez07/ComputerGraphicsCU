@@ -7,7 +7,7 @@ typedef struct form* Form;
 Form newForm(float x, float y, float xSize, float ySize);
 
 // create a new form by given the center point and the sides
-Form newFormC(float x, float y, float xSize, float ySize);
+Form newFormC(float x, float y, float xSize, float ySize, int formType);
 
 // delete form
 void deleteForm(Form f);

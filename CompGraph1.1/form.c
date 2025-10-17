@@ -4,7 +4,7 @@
 #include <time.h>
 #include <GL/glut.h>
 
-int formTypeN = 3;
+int formTypeN = 4;
 
 // internal representation
 typedef enum formType {
@@ -46,8 +46,8 @@ Form newForm(float x, float y, float xSize, float ySize, int formType) {
     return f;
 }
 
-Form newFormC(float x, float y, float xSize, float ySize) {
-    return newForm(x - (xSize / 2), y - (ySize / 2), xSize, ySize);
+Form newFormC(float x, float y, float xSize, float ySize, int formType) {
+    return newForm(x - (xSize / 2), y - (ySize / 2), xSize, ySize, formType);
 }
 
 void deleteForm(Form f) {
@@ -89,29 +89,42 @@ void createRetangle(Form f){
 
 //Sentido contrario ao relogio
 void createSquare(Form f){
-    glBegin(GL_POLYGON);
-    glVertex2d(f->x, f->y); 
-    glVertex2d(f->x + f->xSize, f->y);
-    glVertex2d(f->x + f->xSize, f->y - f->ySize);
-    glVertex2d(f->x - f->xSize, f->y - f->ySize);
+    glColor3f(f->r, f->g, f->b);
+    glBegin(GL_QUADS);
+    glVertex2f(f->x, f->y);
+    glVertex2f(f->x, f->y + f->ySize);
+    glVertex2f(f->x + f->xSize, f->y + f->ySize);
+    glVertex2f(f->x + f->xSize, f->y);
     glEnd();
+
+    // Contorno
+    glColor3f(f->rBorder, f->gBorder, f->bBorder);
+    glLineWidth(2);
+    glBegin(GL_LINE_LOOP);
+    glVertex2f(f->x, f->y);
+    glVertex2f(f->x, f->y + f->ySize);
+    glVertex2f(f->x + f->xSize, f->y + f->ySize);
+    glVertex2f(f->x + f->xSize, f->y);
+    glEnd();
+
+    glFlush();
 }
 
 void createTriangle(Form f){
     glBegin(GL_TRIANGLES);
-    glVertex2f(f->x, f->y + f->ySize);       
-    glVertex2f(f->x - f->xSize, f->y - f->ySize); 
-    glVertex2f(f->x + f->xSize, f->y - f->ySize); 
+    glVertex2f(f->x, f->y);
+    glVertex2f(f->x + f->xSize / 2, f->y + f->ySize);
+    glVertex2f(f->x + f->xSize, f->y);
     glEnd();
 
 }
 
 void createLine(Form f){
-    glBegin(GL_TRIANGLES);
-    glVertex2f(f->x - f->xSize, f->y - f->ySize); 
-    glVertex2f(f->x + f->xSize, f->y - f->ySize); 
+    glColor3f(f->rBorder, f->gBorder, f->bBorder);  
+    glBegin(GL_LINES);
+    glVertex2f(f->x, f->y);                      
+    glVertex2f(f->x + f->xSize, f->y + f->ySize); 
     glEnd();
-
 }
 // --- drawing ---
 
