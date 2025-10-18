@@ -2,16 +2,28 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <math.h>
 #include <GL/glut.h>
 
-int formTypeN = 4;
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
-// internal representation
+float hex_center_x = 0.0f;
+float hex_center_y = 0.0f;
+float hex_radius = 0.6f;   /* radius in world coordinates */
+float hex_rotation = 0.0f;
+
+int formTypeN = 7;
+
 typedef enum formType {
     RECTANGLE,
     SQUARE,
     TRIANGLE,
-    LINE
+    LINE,
+    EQUILATERAL_TRIANGLE,
+    HEXAGON,
+    CIRCLE
 } FormType;
 
 struct form {
@@ -64,8 +76,7 @@ void printfForm(Form f) {
         f->x, f->y, f->xSize, f->ySize);
 }
 
-//---- Draw Type Form -----
-void createRetangle(Form f){
+void createRetangle(Form f) {
     // Fill
     glBegin(GL_POLYGON);
     glVertex2f(f->x, f->y);
@@ -87,8 +98,8 @@ void createRetangle(Form f){
     glFlush();
 }
 
-//Sentido contrario ao relogio
-void createSquare(Form f){
+// Sentido contrário ao relógio
+void createSquare(Form f) {
     glColor3f(f->r, f->g, f->b);
     glBegin(GL_QUADS);
     glVertex2f(f->x, f->y);
@@ -110,23 +121,93 @@ void createSquare(Form f){
     glFlush();
 }
 
-void createTriangle(Form f){
+void createIsocelesTriangle(Form f) {
+    glBegin(GL_TRIANGLES);
+    glVertex2f(f->x, f->y);
+    glVertex2f(f->x + f->xSize / 2, f->y + (f->ySize * 2 ));
+    glVertex2f(f->x + f->xSize, f->y);
+    glEnd();
+}
+
+void createLine(Form f) {
+    glColor3f(f->rBorder, f->gBorder, f->bBorder);
+    glBegin(GL_LINES);
+    glVertex2f(f->x, f->y);
+    glVertex2f(f->x + f->xSize, f->y + f->ySize);
+    glEnd();
+}
+
+
+void createEquilateralTriangle(Form f) {
     glBegin(GL_TRIANGLES);
     glVertex2f(f->x, f->y);
     glVertex2f(f->x + f->xSize / 2, f->y + f->ySize);
     glVertex2f(f->x + f->xSize, f->y);
     glEnd();
-
 }
 
-void createLine(Form f){
-    glColor3f(f->rBorder, f->gBorder, f->bBorder);  
-    glBegin(GL_LINES);
-    glVertex2f(f->x, f->y);                      
-    glVertex2f(f->x + f->xSize, f->y + f->ySize); 
+// Hexágono regular
+void createHexagon(Form f) {
+    float cx = f->x + f->xSize / 2.0f;
+    float cy = f->y + f->ySize / 2.0f;
+
+    /* width = 2*r, height = sqrt(3)*r -> r deve caber em ambos */
+    float r1 = f->xSize / 2.0f;
+    float r2 = f->ySize / sqrtf(3.0f);
+    float r = (r1 < r2) ? r1 : r2;
+
+    /* começar em PI/6 para ter “flat top” (topo plano). Para pointy-top use start = 0.0f */
+    float start = M_PI / 6.0f;
+
+    /* Fill */
+    glColor3f(f->r, f->g, f->b);
+    glBegin(GL_POLYGON);
+    for (int i = 0; i < 6; ++i) {
+        float angle = start + (2.0f * M_PI * i) / 6.0f;
+        glVertex2f(cx + r * cosf(angle), cy + r * sinf(angle));
+    }
     glEnd();
+
+    /* Border */
+    glColor3f(f->rBorder, f->gBorder, f->bBorder);
+    glLineWidth(2.0f);
+    glBegin(GL_LINE_LOOP);
+    for (int i = 0; i < 6; ++i) {
+        float angle = start + (2.0f * M_PI * i) / 6.0f;
+        glVertex2f(cx + r * cosf(angle), cy + r * sinf(angle));
+    }
+    glEnd();
+
+    glFlush();
 }
-// --- drawing ---
+
+// Círculo
+void createCircle(Form f) {
+    float cx = f->x + f->xSize / 2;
+    float cy = f->y + f->ySize / 2;
+    float r = f->xSize / 2;
+
+    glColor3f(f->r, f->g, f->b);
+    glBegin(GL_TRIANGLE_FAN);
+    glVertex2f(cx, cy); // centro
+
+    for (int i = 0; i <= 50; i++) { // 50 segmentos
+        float angle = 2.0 * M_PI * i / 50;
+        glVertex2f(cx + r * cos(angle), cy + r * sin(angle));
+    }
+    glEnd();
+
+    // Contorno
+    glColor3f(f->rBorder, f->gBorder, f->bBorder);
+    glLineWidth(2);
+    glBegin(GL_LINE_LOOP);
+    for (int i = 0; i <= 50; i++) {
+        float angle = 2.0 * M_PI * i / 50;
+        glVertex2f(cx + r * cos(angle), cy + r * sin(angle));
+    }
+    glEnd();
+    glFlush();
+}
 
 void drawForm(Form f) {
 
@@ -138,10 +219,19 @@ void drawForm(Form f) {
 			createSquare(f);
             break;
         case 2:
-			createTriangle(f);
+            createIsocelesTriangle(f);
             break;
         case 3:
 			createLine(f);
+            break;
+        case 4:
+            createEquilateralTriangle(f); 
+            break;
+        case 5:
+            createHexagon(f); 
+            break;
+        case 6:
+            createCircle(f);
             break;
     }
 }
@@ -171,6 +261,9 @@ void initRandomForms(Form forms[], int n, int w, int h) {
             case 1://Square
 			case 2 ://Trinagle
             case 3://Line
+			case 4://Equilateral Triangle
+			case 5://Hexagon
+			case 6://Circle
             {
                 float xSize = ((float)rand() / RAND_MAX) * 150.0 + 50.0;
                 float ySize = xSize;
@@ -186,4 +279,28 @@ void initRandomForms(Form forms[], int n, int w, int h) {
                 break;
         }
     }
+}
+
+
+void cleanForm(Form forms[], int pos, int n) {
+    if(pos >= 0 && pos < n){
+
+        deleteForm(forms[pos]);
+        forms[pos] = NULL;
+	    
+        for(int i = 0; i < n - 1; i++){
+            if (!forms[i] && forms[i + 1]) {
+                forms[i] = forms[i + 1];
+				forms[i + 1] = NULL;
+            }
+        }
+    }
+}
+
+int isEmpty(Form forms[], int n) {
+    for (int i = 0; i < n; i++) {
+        if (forms[i] != NULL)
+            return 0;
+    }
+    return 1; 
 }

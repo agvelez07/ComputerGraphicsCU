@@ -24,4 +24,8 @@ void drawForm(Form f);
 // initialize random forms within screen bounds
 void initRandomForms(Form forms[], int n, int w, int h);
 
+void cleanForm(Form forms[], int pos, int n);
+
+int isEmpty(Form forms[], int n);
+
 #endif
