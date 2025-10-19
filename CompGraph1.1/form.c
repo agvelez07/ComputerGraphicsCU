@@ -72,8 +72,10 @@ void updateForm(Form f, float dx, float dy) {
 }
 
 void printfForm(Form f) {
-    printf("Form: Pos(%.2f, %.2f) Size(%.2f, %.2f)\n",
-        f->x, f->y, f->xSize, f->ySize);
+    if (f) {
+        printf("Form: Pos(%.2f, %.2f) Size(%.2f, %.2f)\n",
+            f->x, f->y, f->xSize, f->ySize);
+    }
 }
 
 void createRetangle(Form f) {
@@ -281,9 +283,26 @@ void initRandomForms(Form forms[], int n, int w, int h) {
     }
 }
 
+int addRandomForm(Form forms[], int n, int w, int h) {
+    for (int i = 0; i < n; i++) {
+        if (forms[i] == NULL) {  
+            int formType = rand() % formTypeN;
+            float size = ((float)rand() / RAND_MAX) * 100.0 + 30.0;
+            float x = ((float)rand() / RAND_MAX) * (w - size);
+            float y = ((float)rand() / RAND_MAX) * (h - size);
 
-void cleanForm(Form forms[], int pos, int n) {
-    if(pos >= 0 && pos < n){
+            forms[i] = newForm(x, y, size, size, formType);
+            printfForm(forms[i]);
+            return 1;
+        }
+    }
+    return -1;
+}
+
+
+
+int cleanForm(Form forms[], int pos, int n) {
+    if(pos >= 0 && pos < n && forms[pos]) {
 
         deleteForm(forms[pos]);
         forms[pos] = NULL;
@@ -294,7 +313,9 @@ void cleanForm(Form forms[], int pos, int n) {
 				forms[i + 1] = NULL;
             }
         }
+        return 1;
     }
+    return -1;
 }
 
 int isEmpty(Form forms[], int n) {
