@@ -11,7 +11,8 @@ Form a[N];
 int drawFormCount = 0;
 int displayCallCount = 0;
 int nActiveForms = 0;
-
+int clickCount = 0;
+int xPos, yPos;
 
 void initForms() {
     for (int i = 0; i < N; i++)
@@ -22,6 +23,44 @@ void initForms() {
     for (int k = 0; k < N; k++)
         if (a[k] != NULL)
             printfForm(a[k]);
+}
+
+void deleteRandForm() {
+
+    if (nActiveForms <= 0 || isEmpty(a, N)) {
+        printf("\n\n---------------------------");
+        printf("\n| No form left to Delete. |");
+        printf("\n---------------------------\n\n");
+        return;
+    }
+
+    int res = 0;
+    int attempts = 0;
+    int maxAttempts = N * 2;  
+
+    do {
+        int formToDelete = rand() % N;  
+        attempts++;
+
+        if (!a[formToDelete])
+            continue;
+
+        res = cleanForm(a, formToDelete, N);
+        if (res == 1) {
+            nActiveForms--;
+            break; 
+        }
+
+    } while (attempts < maxAttempts);
+
+     
+    if (isEmpty(a, N)) {
+        printf("\n\n---------------------------");
+        printf("\n| All forms deleted.     |");
+        printf("\n---------------------------\n\n");
+    }
+
+    glutPostRedisplay();
 }
 
 void handleFormLifecycle() {
@@ -61,6 +100,7 @@ void myDisplay() {
     }*/
     glFlush();
 }
+
 void myMouse(int button, int state, int x, int y) {
     int invertedY = H - y;
 
@@ -77,54 +117,16 @@ void myMouse(int button, int state, int x, int y) {
     printf("  Inverted Y Pos:   (%d, %d)\n\n", x, invertedY);
 
     //Exercise 3
-    /*if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-      
-        int res = addRandomForm(a, N, W, H);
-        
-        if (addRandomForm) {
-			nActiveForms++;
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+        clickCount++;
+        if (clickCount == 2) {
+            addRandomFormAt(a, N, W, H, x, invertedY);
+			clickCount = 0;
         }
-        
-        if (res == 1) {
-            printf("Added new form at position %d:\n", res - 1);
-            printfForm(a[res - 1]);
-        }
-        else {
-            printf("\n\n---------------------------");
-            printf("\n|No space to add new form.|");
-            printf("\n---------------------------\n\n");
-
-        }
-        glutPostRedisplay();
     }
-
+    /*
     if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
-        int res = 0;
-        int attempts = 0;
-        int maxAttempts = N + 1;
-
-        do {
-            int formToDelete = rand() % nActiveForms;
-            attempts++;
-
-            if(!a[formToDelete]){
-                continue;
-		    }
-            
-            res =  cleanForm(a, formToDelete, N);
-        } while (res != 1 && attempts < maxAttempts);
-
-        if (res == 1) {
-            nActiveForms--;
-        }
-        else if (res != 1) {
-      
-            printf("\n\n---------------------------");
-            printf("\n|No form left to Delete.|");
-            printf("\n---------------------------\n\n");
-
-        }
-        glutPostRedisplay();
+        void deleteRandForm();
     }
     */
     //
@@ -150,6 +152,24 @@ void myMouse(int button, int state, int x, int y) {
 
 }
 
+void myKeyboard(unsigned char key, int x, int y) {
+    printf("Tecla: %c (%d)\n", key, key);
+
+    switch (key) {
+        // 'd' key
+        case 100:
+        case 68:
+            deleteRandForm();
+			break;
+        case 113:
+        case 81:
+			exit(0);
+			break;
+        default:
+            break;
+    }
+}
+
 
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
@@ -166,6 +186,7 @@ int main(int argc, char** argv) {
 
     //Rato
 	glutMouseFunc(myMouse);
+    glutKeyboardFunc(myKeyboard);
 
     //initForms();
     glutDisplayFunc(myDisplay);
