@@ -299,6 +299,21 @@ int addRandomForm(Form forms[], int n, int w, int h) {
     return -1;
 }
 
+int addRandomFormAt(Form forms[], int n, int w, int h, int x, int y) {
+    for (int i = 0; i < n; i++) {
+        if (forms[i] == NULL) {
+            int formType = rand() % formTypeN;
+            float size = ((float)rand() / RAND_MAX) * 100.0 + 30.0;
+            float recX = x;
+            float recY = y;
+
+            forms[i] = newForm(x, y, size, size, formType);
+            printfForm(forms[i]);
+            return 1;
+        }
+    }
+    return -1;
+}
 
 
 int cleanForm(Form forms[], int pos, int n) {

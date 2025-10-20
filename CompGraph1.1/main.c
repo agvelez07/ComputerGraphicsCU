@@ -76,7 +76,8 @@ void myMouse(int button, int state, int x, int y) {
     printf("  Raw Position:     (%d, %d)\n", x, y);
     printf("  Inverted Y Pos:   (%d, %d)\n\n", x, invertedY);
 
-    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+    //Exercise 3
+    /*if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
       
         int res = addRandomForm(a, N, W, H);
         
@@ -125,6 +126,28 @@ void myMouse(int button, int state, int x, int y) {
         }
         glutPostRedisplay();
     }
+    */
+    //
+    if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
+        int res = addRandomFormAt(a, N, W, H, x, invertedY);
+
+        if (addRandomFormAt) {
+            nActiveForms++;
+        }
+
+        if (res == 1) {
+            printf("Added new form at position %d:\n", res - 1);
+            printfForm(a[res - 1]);
+        }
+        else {
+            printf("\n\n---------------------------");
+            printf("\n|No space to add new form.|");
+            printf("\n---------------------------\n\n");
+
+        }
+        glutPostRedisplay();
+    }
+
 }
 
 

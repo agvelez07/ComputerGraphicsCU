@@ -26,6 +26,8 @@ void initRandomForms(Form forms[], int n, int w, int h);
 
 int addRandomForm(Form forms[], int n, int w, int h);
 
+int addRandomFormAt(Form forms[], int n, int w, int h, int x, int y);
+
 int cleanForm(Form forms[], int pos, int n);
 
 int isEmpty(Form forms[], int n);

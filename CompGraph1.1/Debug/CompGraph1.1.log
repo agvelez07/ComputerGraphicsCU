@@ -1,6 +1,6 @@
 ﻿  main.c
-C:\Users\vitam\source\repos\CompGraph1.1\CompGraph1.1\main.c(142,18): warning C4305: 'function': truncation from 'double' to 'GLclampf'
-C:\Users\vitam\source\repos\CompGraph1.1\CompGraph1.1\main.c(142,23): warning C4305: 'function': truncation from 'double' to 'GLclampf'
-C:\Users\vitam\source\repos\CompGraph1.1\CompGraph1.1\main.c(142,28): warning C4305: 'function': truncation from 'double' to 'GLclampf'
-C:\Users\vitam\source\repos\CompGraph1.1\CompGraph1.1\main.c(148,21): warning C4113: 'void (__cdecl *)()' differs in parameter lists from 'void (__cdecl *)(void)'
+C:\Users\vitam\source\repos\CompGraph1.1\CompGraph1.1\main.c(165,18): warning C4305: 'function': truncation from 'double' to 'GLclampf'
+C:\Users\vitam\source\repos\CompGraph1.1\CompGraph1.1\main.c(165,23): warning C4305: 'function': truncation from 'double' to 'GLclampf'
+C:\Users\vitam\source\repos\CompGraph1.1\CompGraph1.1\main.c(165,28): warning C4305: 'function': truncation from 'double' to 'GLclampf'
+C:\Users\vitam\source\repos\CompGraph1.1\CompGraph1.1\main.c(171,21): warning C4113: 'void (__cdecl *)()' differs in parameter lists from 'void (__cdecl *)(void)'
   CompGraph1.1.vcxproj -> C:\Users\vitam\source\repos\CompGraph1.1\Debug\CompGraph1.1.exe
