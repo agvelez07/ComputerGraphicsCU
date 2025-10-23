@@ -12,6 +12,8 @@ Form newFormC(float x, float y, float xSize, float ySize, int formType);
 // delete form
 void deleteForm(Form f);
 
+deleteFormAt(Form forms[], int n, int x, int y);
+
 // update a form position - moving by (dx,dy)
 void updateForm(Form f, float dx, float dy);
 
@@ -26,10 +28,12 @@ void initRandomForms(Form forms[], int n, int w, int h);
 
 int addRandomForm(Form forms[], int n, int w, int h);
 
-int addRandomFormAt(Form forms[], int n, int w, int h, int x, int y);
+int addFormAt(Form forms[], int n, int w, int h, int x, int y);
 
 int cleanForm(Form forms[], int pos, int n);
 
 int isEmpty(Form forms[], int n);
+
+int formExistsAt(Form forms[], int n, int x , int y);
 
 #endif

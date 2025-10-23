@@ -13,6 +13,7 @@ int displayCallCount = 0;
 int nActiveForms = 0;
 int clickCount = 0;
 int xPos, yPos;
+int mouseX = 0, mouseY = 0;
 
 void initForms() {
     for (int i = 0; i < N; i++)
@@ -120,7 +121,7 @@ void myMouse(int button, int state, int x, int y) {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
         clickCount++;
         if (clickCount == 2) {
-            addRandomFormAt(a, N, W, H, x, invertedY);
+            addFormAT(a, N, W, H, x, invertedY);
 			clickCount = 0;
         }
     }
@@ -131,9 +132,19 @@ void myMouse(int button, int state, int x, int y) {
     */
     //
     if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
-        int res = addRandomFormAt(a, N, W, H, x, invertedY);
+        
+        int res = addFormAT(a, N, W, H, x, invertedY);
+		int isFormAlreadyThere = formExistsAt(a, N, x, invertedY);
 
-        if (addRandomFormAt) {
+        if (isFormAlreadyThere) {
+            printf("\n\n-----------------------------------------");
+            printf("\n| Form already exists at this position. |");
+            printf("\n-----------------------------------------\n\n");
+            glutPostRedisplay();
+			return;
+        }
+
+        if (addFormAT) {
             nActiveForms++;
         }
 
@@ -152,21 +163,29 @@ void myMouse(int button, int state, int x, int y) {
 
 }
 
+void updateMousePosition(int x, int y) {
+    mouseX = x;
+    mouseY = H - y; // inverter coordenada Y
+}
+
 void myKeyboard(unsigned char key, int x, int y) {
     printf("Tecla: %c (%d)\n", key, key);
 
     switch (key) {
-        // 'd' key
-        case 100:
-        case 68:
-            deleteRandForm();
-			break;
-        case 113:
-        case 81:
-			exit(0);
-			break;
-        default:
-            break;
+    case 'd':
+    case 'D':
+        printf("Deleting form at current mouse position (%d, %d)\n", mouseX, mouseY);
+        deleteFormAt(a, N, mouseX, mouseY);
+        glutPostRedisplay();
+        break;
+
+    case 'q':
+    case 'Q':
+        exit(0);
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -177,20 +196,17 @@ int main(int argc, char** argv) {
     glutInitWindowSize(W, H);
     glutCreateWindow("Simple OpenGL Forms");
 
-    //coordenadas do ecrã
     glViewport(0, 0, W, H);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluOrtho2D(0, W, 0, H);
     glClearColor(0.1, 0.1, 0.1, 1.0);
 
-    //Rato
-	glutMouseFunc(myMouse);
-    glutKeyboardFunc(myKeyboard);
-
-    //initForms();
     glutDisplayFunc(myDisplay);
-    glutMainLoop();
+    glutMouseFunc(myMouse);
+    glutKeyboardFunc(myKeyboard);
+    glutPassiveMotionFunc(updateMousePosition);
 
+    glutMainLoop();
     return 0;
 }

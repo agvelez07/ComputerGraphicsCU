@@ -66,6 +66,17 @@ void deleteForm(Form f) {
     free(f);
 }
 
+int deleteFormAt(Form forms[], int n, int x, int y) {
+    for (int i = 0; i < n; i++) {
+        if (forms[i] != NULL && forms[i]->x == x && forms[i]->y == y) {
+            deleteForm(forms[i]);
+            forms[i] = NULL; 
+            return 1;
+        }
+    }
+    return -1;
+}
+
 void updateForm(Form f, float dx, float dy) {
     f->x += dx;
     f->y += dy;
@@ -139,7 +150,6 @@ void createLine(Form f) {
     glEnd();
 }
 
-
 void createEquilateralTriangle(Form f) {
     glBegin(GL_TRIANGLES);
     glVertex2f(f->x, f->y);
@@ -150,22 +160,21 @@ void createEquilateralTriangle(Form f) {
 
 // Hexágono regular
 void createHexagon(Form f) {
-    float cx = f->x + f->xSize / 2.0f;
-    float cy = f->y + f->ySize / 2.0f;
+    float cx = f->x + f->xSize / 2.0;
+    float cy = f->y + f->ySize / 2.0;
 
-    /* width = 2*r, height = sqrt(3)*r -> r deve caber em ambos */
-    float r1 = f->xSize / 2.0f;
-    float r2 = f->ySize / sqrtf(3.0f);
+     
+    float r1 = f->xSize / 2.0;
+    float r2 = f->ySize / sqrtf(3.0);
     float r = (r1 < r2) ? r1 : r2;
 
-    /* começar em PI/6 para ter “flat top” (topo plano). Para pointy-top use start = 0.0f */
-    float start = M_PI / 6.0f;
-
-    /* Fill */
+     
+    float start = M_PI / 6.0;
+ 
     glColor3f(f->r, f->g, f->b);
     glBegin(GL_POLYGON);
     for (int i = 0; i < 6; ++i) {
-        float angle = start + (2.0f * M_PI * i) / 6.0f;
+        float angle = start + (2.0 * M_PI * i) / 6.0;
         glVertex2f(cx + r * cosf(angle), cy + r * sinf(angle));
     }
     glEnd();
@@ -175,7 +184,7 @@ void createHexagon(Form f) {
     glLineWidth(2.0f);
     glBegin(GL_LINE_LOOP);
     for (int i = 0; i < 6; ++i) {
-        float angle = start + (2.0f * M_PI * i) / 6.0f;
+        float angle = start + (2.0 * M_PI * i) / 6.0;
         glVertex2f(cx + r * cosf(angle), cy + r * sinf(angle));
     }
     glEnd();
@@ -299,7 +308,7 @@ int addRandomForm(Form forms[], int n, int w, int h) {
     return -1;
 }
 
-int addRandomFormAt(Form forms[], int n, int w, int h, int x, int y) {
+int addFormAT(Form forms[], int n, int w, int h, int x, int y) {
     for (int i = 0; i < n; i++) {
         if (forms[i] == NULL) {
             int formType = rand() % formTypeN;
@@ -314,7 +323,6 @@ int addRandomFormAt(Form forms[], int n, int w, int h, int x, int y) {
     }
     return -1;
 }
-
 
 int cleanForm(Form forms[], int pos, int n) {
     if(pos >= 0 && pos < n && forms[pos]) {
@@ -339,4 +347,13 @@ int isEmpty(Form forms[], int n) {
             return 0;
     }
     return 1; 
+}
+
+int formExistsAt(Form forms[], int n, int x, int y) {
+    for (int i = 0; i < n; i++) {
+        if (forms[i]->x == x && forms[i]->y == y) {
+			return 1;
+        }
+    }
+    return 0;
 }
