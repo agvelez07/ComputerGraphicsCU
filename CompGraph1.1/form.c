@@ -14,14 +14,17 @@ float hex_center_y = 0;
 float hex_radius = 0;   
 float hex_rotation = 0;
 
-int formTypeN = 7;
-int palleteFormN = 3;
-
 float r = 0;
 float g = 0;
 float b = 0;
 
+int formTypeN = 7;
+int palleteFormN = 3;
+
 int hasActiveColor = 0;
+int hasActiveShape = 0;
+int activeShapeType = -1;
+
 
 typedef enum formType {
     RECTANGLE,
@@ -51,7 +54,7 @@ Form newForm(float x, float y, float xSize, float ySize, int formType) {
     f->xSize = xSize;
     f->ySize = ySize;
      
-    if(hasActiveColor == 1){
+    if(hasActiveColor){
         f->r = r;
         f->g = g;
         f->b = b;
@@ -66,8 +69,22 @@ Form newForm(float x, float y, float xSize, float ySize, int formType) {
     f->gBorder = (float)rand() / RAND_MAX;
     f->bBorder = (float)rand() / RAND_MAX;
 
-    f->formType = formType; 
+    if (hasActiveShape && activeShapeType >= 0) {
+        f->formType = activeShapeType;
 
+        if (hasActiveShape && activeShapeType >= 0) {
+            f->formType = activeShapeType;
+
+            if (activeShapeType == RECTANGLE) {
+                f->xSize *= 1.8;
+            }
+        }
+        else {
+            f->formType = formType;
+        }
+
+
+    }
     return f;
 }
 
@@ -228,7 +245,7 @@ void createHexagon(Form f) {
     glEnd();
 
     glColor3f(f->rBorder, f->gBorder, f->bBorder);
-    glLineWidth(2.0f);
+    glLineWidth(2.0);
     glBegin(GL_LINE_LOOP);
     for (int i = 0; i < 6; ++i) {
         float angle = start + (2.0 * M_PI * i) / 6.0;
@@ -265,11 +282,7 @@ void createCircle(Form f) {
     glFlush();
 }
 
-
 void drawForm(Form f) {
-    printf("\n----------------------------------------\n");
-	printf("Has Active Colour: %d", hasActiveColor);
-    printf("\n----------------------------------------\n");
     switch (f->formType) {
         case 0:
 			createRetangle(f);
@@ -338,10 +351,9 @@ void initRandomForms(Form forms[], int n, int w, int h) {
     }
 }
 
-int addRandomForm(Form forms[], Form  palleteForm[], int n, int w, int h) {
+int addRandomForm(Form forms[], Form palleteForm[], Form selectFormType[], int n, int w, int h) {
     for (int i = 0; i < n; i++) {
         if (forms[i] == NULL) {
-
             int formType = rand() % formTypeN;
             float size = ((float)rand() / RAND_MAX) * 100.0 + 30.0;
             float x, y;
@@ -356,9 +368,10 @@ int addRandomForm(Form forms[], Form  palleteForm[], int n, int w, int h) {
                 temp = newForm(x, y, size, size, formType);
                 attempts++;
 
-            } while ((overlapsAny(temp, forms, n) || overlapsAnyPalette(temp, palleteForm, palleteFormN)) 
-         && attempts < 100);
-
+            } while ((overlapsAny(temp, forms, n) ||
+                overlapsAny(temp, palleteForm, palleteFormN) ||
+                overlapsAny(temp, selectFormType, formTypeN)) &&
+                attempts < 100);
 
             if (attempts >= 100) {
                 printf("Nao encontrei espaco livre para nova figura.\n");
@@ -374,7 +387,7 @@ int addRandomForm(Form forms[], Form  palleteForm[], int n, int w, int h) {
     return -1;
 }
 
-int addFormAT(Form forms[], Form palleteForm[], int n, int w, int h, int x, int y) {
+int addFormAT(Form forms[], Form palleteForm[], Form selectFormType[], int n, int w, int h, int x, int y) {
     for (int i = 0; i < n; i++) {
         if (forms[i] == NULL) {
             int formType = rand() % formTypeN;
@@ -382,8 +395,9 @@ int addFormAT(Form forms[], Form palleteForm[], int n, int w, int h, int x, int 
 
             Form temp = newForm(x, y, size, size, formType);
 
- 
-            if (overlapsAnyPalette(temp, palleteForm, palleteFormN)) {
+            if (overlapsAny(temp, palleteForm, palleteFormN) ||
+                overlapsAny(temp, selectFormType, formTypeN) ||
+                overlapsAny(temp, forms, n)) {
                 deleteForm(temp);
                 return -1;
             }
@@ -395,6 +409,7 @@ int addFormAT(Form forms[], Form palleteForm[], int n, int w, int h, int x, int 
     }
     return -1;
 }
+
 
 int cleanForm(Form forms[], int pos, int n) {
     if(pos >= 0 && pos < n && forms[pos]) {
@@ -430,7 +445,12 @@ int formExistsAt(Form forms[], int n, int x, int y) {
     return 0;
 }
 
-void createPaleteForms(Form forms[]) {
+//+-------------------------------------------------------------------------------------------------------------------------------
+//|  Pallete   
+//|
+//+-------------------------------------------------------------------------------------------------------------------------------
+
+void createPaletteForms(Form forms[]) {
     float size = 80;
     float y = 10;
 
@@ -468,28 +488,7 @@ void drawPalette(Form forms[]) {
     }
 }
 
-int overlapsAnyPalette(Form newForm, Form paletteForms[], int n) {
-    for (int i = 0; i < n; i++) {
-        if (paletteForms[i] && formsOverlap(newForm, paletteForms[i])) {
-            return 1;
-        }
-    }
-    return 0;
-}
-
-int paletteColorSelected(Form palleteForms[], int x, int y) {
-    for (int i = 0; i < palleteFormN; i++) {
-		Form f = palleteForms[i];
-         if(f){
-             if (x >= f->x && x <= f->x + f->xSize && y >= f->y && y <= f->y + f->ySize) {
-                 return i + 1; 
-             }
-		 }
-    }
-	return 0;
-}
-
-int selectPalleteColor(Form palleteForms[], int i) {
+int selectPaleteColor(Form palleteForms[], int i) {
     if (i != 0) {
         Form f = palleteForms[i - 1];
         f->rBorder = 0;
@@ -510,6 +509,134 @@ int selectPalleteColor(Form palleteForms[], int i) {
                 other->bBorder = 1;
             }
 		}
+        return 1;
+    }
+    return 0;
+}
+
+int selectedColor(Form palleteForms[], int x, int y) {
+    for (int i = 0; i < palleteFormN; i++) {
+        Form f = palleteForms[i];
+        if (f) {
+            if (x >= f->x && x <= f->x + f->xSize && y >= f->y && y <= f->y + f->ySize) {
+                return i + 1;
+            }
+        }
+    }
+    return 0;
+}
+
+int activeColor(Form forms[], int i) {
+    if (i != 0) {
+        Form f = forms[i - 1];
+        f->rBorder = 0;
+        f->gBorder = 1;
+        f->bBorder = 0;
+
+        hasActiveColor = 1;
+
+        r = f->r;
+        g = f->g;
+        b = f->b;
+
+
+
+        for (int j = 0; j < palleteFormN; j++) {
+            if (j != i - 1) {
+                Form other = forms[j];
+                other->rBorder = 1;
+                other->gBorder = 1;
+                other->bBorder = 1;
+            }
+        }
+        return 1;
+    }
+    return 0;
+}
+
+//+-------------------------------------------------------------------------------------------------------------------------------
+//|  Forms 
+//|
+//+-------------------------------------------------------------------------------------------------------------------------------
+
+void createFormsToSelect(Form forms[], int w, int h) {
+    float size = 40;
+    float marginRight = 60;
+    float spacing = 25;
+    float extraSpacing = 20;
+    float totalHeight = formTypeN * size + (formTypeN - 1) * spacing + extraSpacing;
+    float startY = (h - totalHeight) / 2;
+    float xCenter = w - marginRight - size / 2;
+
+    for (int i = 0; i < formTypeN; i++) {
+        forms[i] = (Form)malloc(sizeof(struct form));
+
+        float offsetY = (i > 3) ? extraSpacing : 0;
+        float y = startY + i * (size + spacing) + offsetY;
+
+        if (i == 3) {
+            y += 10;
+        }
+
+        forms[i]->xSize = size;
+        forms[i]->ySize = size;
+
+      
+        forms[i]->r = 0.83;
+        forms[i]->g = 0.83;
+        forms[i]->b = 0.83;
+        forms[i]->rBorder = 1;
+        forms[i]->gBorder = 1;
+        forms[i]->bBorder = 1;
+
+  
+        switch (i) {
+        case RECTANGLE:
+            forms[i]->formType = RECTANGLE;
+            forms[i]->xSize = size * 2.5;
+            forms[i]->ySize = size;
+            forms[i]->x = xCenter - (forms[i]->xSize / 2);
+            break;
+        default:
+            forms[i]->formType = i;
+            forms[i]->x = xCenter - (forms[i]->xSize / 2);
+            break;
+        }
+
+        forms[i]->y = y;
+    }
+}
+
+int selectedShape(Form forms[], int x, int y) {
+    for (int i = 0; i < formTypeN; i++) {
+        Form f = forms[i];
+        if (f) {
+            if (x >= f->x && x <= f->x + f->xSize && y >= f->y && y <= f->y + f->ySize) {
+                return i + 1;
+            }
+        }
+    }
+    return 0;
+}
+
+int activeShape(Form forms[], int i) {
+    if (i != 0) {
+        Form f = forms[i - 1];
+        f->rBorder = 0;
+        f->gBorder = 1;
+        f->bBorder = 0;
+
+        hasActiveShape = 1;
+        activeShapeType = f->formType;
+
+        for (int j = 0; j < formTypeN; j++) {
+            if (j != i - 1) {
+                Form other = forms[j];
+                other->rBorder = 1;
+                other->gBorder = 1;
+                other->bBorder = 1;
+            }
+        }
         return 1;
     }
     return 0;
