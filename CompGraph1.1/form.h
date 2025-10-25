@@ -3,37 +3,31 @@
 
 typedef struct form* Form;
 
-// create a new form by given the original point and the sides
 Form newForm(float x, float y, float xSize, float ySize);
-
-// create a new form by given the center point and the sides
 Form newFormC(float x, float y, float xSize, float ySize, int formType);
 
-// delete form
 void deleteForm(Form f);
+int deleteFormAt(Form forms[], int n, int x, int y);
 
-deleteFormAt(Form forms[], int n, int x, int y);
-
-// update a form position - moving by (dx,dy)
 void updateForm(Form f, float dx, float dy);
-
-// print form info
 void printfForm(Form f);
-
-// draw form
 void drawForm(Form f);
 
-// initialize random forms within screen bounds
 void initRandomForms(Form forms[], int n, int w, int h);
 
-int addRandomForm(Form forms[], int n, int w, int h);
-
-int addFormAt(Form forms[], int n, int w, int h, int x, int y);
+int addRandomForm(Form forms[], Form paletteForm[], int n, int w, int h);
+int addFormAT(Form forms[], Form paletteForm[], int n, int w, int h, int x, int y);
 
 int cleanForm(Form forms[], int pos, int n);
-
 int isEmpty(Form forms[], int n);
+int formExistsAt(Form forms[], int n, int x, int y);
 
-int formExistsAt(Form forms[], int n, int x , int y);
+void createPaletteForms(Form forms[]);
+void drawPalette(Form forms[]);
+
+int overlapsAnyPalette(Form newForm, Form paletteForms[], int n);
+
+int paletteColorSelected(Form paletteForms[], int x, int y);
+int selectPaletteColor(Form paletteForms[], int i);
 
 #endif

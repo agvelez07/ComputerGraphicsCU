@@ -8,12 +8,15 @@
 #define H 480
 
 Form a[N];
+Form palleteForms[N];
+
 int drawFormCount = 0;
 int displayCallCount = 0;
 int nActiveForms = 0;
 int clickCount = 0;
 int xPos, yPos;
 int mouseX = 0, mouseY = 0;
+
 
 void initForms() {
     for (int i = 0; i < N; i++)
@@ -80,10 +83,16 @@ void handleFormLifecycle() {
     cleanForm(a, pos, N);
 }
 
-void myDisplay() {
+void palette() {
+    drawPalette(palleteForms);
+    glFlush();
+}
+
+void display() {
     glClear(GL_COLOR_BUFFER_BIT);
 	displayCallCount++;
 
+    palette();
     for (int i = 0; i < N; i++) {
         if (a[i] != NULL) {
             drawForm(a[i]);
@@ -102,7 +111,7 @@ void myDisplay() {
     glFlush();
 }
 
-void myMouse(int button, int state, int x, int y) {
+void mouse(int button, int state, int x, int y) {
     int invertedY = H - y;
 
     char* buttonName = (button == GLUT_LEFT_BUTTON) ? "LEFT" :
@@ -117,14 +126,35 @@ void myMouse(int button, int state, int x, int y) {
     printf("  Raw Position:     (%d, %d)\n", x, y);
     printf("  Inverted Y Pos:   (%d, %d)\n\n", x, invertedY);
 
-    //Exercise 3
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
         clickCount++;
+        int colorIndex = paletteColorSelected(palleteForms, x, invertedY);
+         
+        if (clickCount == 1 && colorIndex != 0) {
+            selectPalleteColor(palleteForms, colorIndex);
+            glutPostRedisplay();
+            clickCount = 0;
+            return;
+        }
+
+ 
         if (clickCount == 2) {
-            addFormAT(a, N, W, H, x, invertedY);
-			clickCount = 0;
+            if (colorIndex == 0) {
+                if (addFormAT(a, palleteForms, N, W, H, x, invertedY)) {
+                    printf("Form created at (%d,%d)\n", x, invertedY);
+                    nActiveForms++;
+                }
+                else {
+                    printf("\n\n---------------------------\n");
+                    printf("| No space to add new form |\n");
+                    printf("---------------------------\n\n");
+                }
+            }
+            clickCount = 0;
         }
     }
+
+
     /*
     if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
         void deleteRandForm();
@@ -133,7 +163,7 @@ void myMouse(int button, int state, int x, int y) {
     //
     if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
         
-        int res = addFormAT(a, N, W, H, x, invertedY);
+        int res = addFormAT(a, palleteForms,  N, W, H, x, invertedY);
 		int isFormAlreadyThere = formExistsAt(a, N, x, invertedY);
 
         if (isFormAlreadyThere) {
@@ -165,10 +195,10 @@ void myMouse(int button, int state, int x, int y) {
 
 void updateMousePosition(int x, int y) {
     mouseX = x;
-    mouseY = H - y; // inverter coordenada Y
+    mouseY = H - y; 
 }
 
-void myKeyboard(unsigned char key, int x, int y) {
+void keyboard(unsigned char key, int x, int y) {
     printf("Tecla: %c (%d)\n", key, key);
 
     switch (key) {
@@ -189,8 +219,8 @@ void myKeyboard(unsigned char key, int x, int y) {
     }
 }
 
-
 int main(int argc, char** argv) {
+    createPaleteForms(palleteForms);
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
     glutInitWindowSize(W, H);
@@ -202,9 +232,9 @@ int main(int argc, char** argv) {
     gluOrtho2D(0, W, 0, H);
     glClearColor(0.1, 0.1, 0.1, 1.0);
 
-    glutDisplayFunc(myDisplay);
-    glutMouseFunc(myMouse);
-    glutKeyboardFunc(myKeyboard);
+    glutDisplayFunc(display);
+    glutMouseFunc(mouse);
+    glutKeyboardFunc(keyboard);
     glutPassiveMotionFunc(updateMousePosition);
 
     glutMainLoop();

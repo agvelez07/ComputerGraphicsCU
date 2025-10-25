@@ -9,12 +9,19 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-float hex_center_x = 0.0f;
-float hex_center_y = 0.0f;
-float hex_radius = 0.6f;   /* radius in world coordinates */
-float hex_rotation = 0.0f;
+float hex_center_x = 0;
+float hex_center_y = 0;
+float hex_radius = 0;   
+float hex_rotation = 0;
 
 int formTypeN = 7;
+int palleteFormN = 3;
+
+float r = 0;
+float g = 0;
+float b = 0;
+
+int hasActiveColor = 0;
 
 typedef enum formType {
     RECTANGLE,
@@ -27,39 +34,65 @@ typedef enum formType {
 } FormType;
 
 struct form {
-    float x, y;                 // initial point
-    float xSize, ySize;         // dimensions
-    float r, g, b;              // fill color
-    float rBorder, gBorder, bBorder; // border color
+    float x, y;              
+    float xSize, ySize;         
+    float r, g, b;              
+    float rBorder, gBorder, bBorder; 
     FormType formType;
 };
 
-// --- constructors ---
-
 Form newForm(float x, float y, float xSize, float ySize, int formType) {
     Form f = (Form)malloc(sizeof(struct form));
+
+    printf("\n\n\n\nR: %.2f G: %.2f B: %.2f\n\n\n\n", r, g, b);
 
     f->x = x;
     f->y = y;
     f->xSize = xSize;
     f->ySize = ySize;
-
-    // random colors
-    f->r = (float)rand() / RAND_MAX;
-    f->g = (float)rand() / RAND_MAX;
-    f->b = (float)rand() / RAND_MAX;
+     
+    if(hasActiveColor == 1){
+        f->r = r;
+        f->g = g;
+        f->b = b;
+    }
+    else {
+        f->r = (float)rand() / RAND_MAX;
+        f->g = (float)rand() / RAND_MAX;
+        f->b = (float)rand() / RAND_MAX;
+    }
 
     f->rBorder = (float)rand() / RAND_MAX;
     f->gBorder = (float)rand() / RAND_MAX;
     f->bBorder = (float)rand() / RAND_MAX;
 
-    f->formType = formType; //Selecionar forma aleatoria
+    f->formType = formType; 
 
     return f;
 }
 
 Form newFormC(float x, float y, float xSize, float ySize, int formType) {
     return newForm(x - (xSize / 2), y - (ySize / 2), xSize, ySize, formType);
+}
+
+int formsOverlap(Form a, Form b) {
+    if (!a || !b) return 0;
+
+    return (
+        a->x < b->x + b->xSize + 1 &&
+        a->x + a->xSize + 1 > b->x &&
+        a->y < b->y + b->ySize + 1 &&
+        a->y + a->ySize + 1 > b->y
+        );
+}
+
+int overlapsAny(Form newForm, Form forms[], int n) {
+    for (int i = 0; i < n; i++) {
+        if (forms[i] && formsOverlap(newForm, forms[i])) {
+            return 1;
+        }
+    }
+    return 0;
 }
 
 void deleteForm(Form f) {
@@ -90,7 +123,7 @@ void printfForm(Form f) {
 }
 
 void createRetangle(Form f) {
-    // Fill
+    glColor3f(f->r, f->g, f->b);
     glBegin(GL_POLYGON);
     glVertex2f(f->x, f->y);
     glVertex2f(f->x, f->y + f->ySize);
@@ -98,7 +131,6 @@ void createRetangle(Form f) {
     glVertex2f(f->x + f->xSize, f->y);
     glEnd();
 
-    // Border
     glColor3f(f->rBorder, f->gBorder, f->bBorder);
     glLineWidth(2);
     glBegin(GL_LINE_LOOP);
@@ -111,7 +143,6 @@ void createRetangle(Form f) {
     glFlush();
 }
 
-// Sentido contrário ao relógio
 void createSquare(Form f) {
     glColor3f(f->r, f->g, f->b);
     glBegin(GL_QUADS);
@@ -121,7 +152,6 @@ void createSquare(Form f) {
     glVertex2f(f->x + f->xSize, f->y);
     glEnd();
 
-    // Contorno
     glColor3f(f->rBorder, f->gBorder, f->bBorder);
     glLineWidth(2);
     glBegin(GL_LINE_LOOP);
@@ -135,11 +165,22 @@ void createSquare(Form f) {
 }
 
 void createIsocelesTriangle(Form f) {
+    glColor3f(f->r, f->g, f->b);
     glBegin(GL_TRIANGLES);
     glVertex2f(f->x, f->y);
-    glVertex2f(f->x + f->xSize / 2, f->y + (f->ySize * 2 ));
+    glVertex2f(f->x + f->xSize / 2, f->y + (f->ySize * 2));
     glVertex2f(f->x + f->xSize, f->y);
     glEnd();
+
+    glColor3f(f->rBorder, f->gBorder, f->bBorder);
+    glLineWidth(2);
+    glBegin(GL_LINE_LOOP);
+    glVertex2f(f->x, f->y);
+    glVertex2f(f->x + f->xSize / 2, f->y + (f->ySize * 2));
+    glVertex2f(f->x + f->xSize, f->y);
+    glEnd();
+
+    glFlush();
 }
 
 void createLine(Form f) {
@@ -148,29 +189,36 @@ void createLine(Form f) {
     glVertex2f(f->x, f->y);
     glVertex2f(f->x + f->xSize, f->y + f->ySize);
     glEnd();
+    glFlush();
 }
 
 void createEquilateralTriangle(Form f) {
+    glColor3f(f->r, f->g, f->b);
     glBegin(GL_TRIANGLES);
     glVertex2f(f->x, f->y);
     glVertex2f(f->x + f->xSize / 2, f->y + f->ySize);
     glVertex2f(f->x + f->xSize, f->y);
     glEnd();
+
+    glColor3f(f->rBorder, f->gBorder, f->bBorder);
+    glLineWidth(2);
+    glBegin(GL_LINE_LOOP);
+    glVertex2f(f->x, f->y);
+    glVertex2f(f->x + f->xSize / 2, f->y + f->ySize);
+    glVertex2f(f->x + f->xSize, f->y);
+    glEnd();
+
+    glFlush();
 }
 
-// Hexágono regular
 void createHexagon(Form f) {
     float cx = f->x + f->xSize / 2.0;
     float cy = f->y + f->ySize / 2.0;
-
-     
     float r1 = f->xSize / 2.0;
     float r2 = f->ySize / sqrtf(3.0);
     float r = (r1 < r2) ? r1 : r2;
-
-     
     float start = M_PI / 6.0;
- 
+
     glColor3f(f->r, f->g, f->b);
     glBegin(GL_POLYGON);
     for (int i = 0; i < 6; ++i) {
@@ -179,7 +227,6 @@ void createHexagon(Form f) {
     }
     glEnd();
 
-    /* Border */
     glColor3f(f->rBorder, f->gBorder, f->bBorder);
     glLineWidth(2.0f);
     glBegin(GL_LINE_LOOP);
@@ -192,7 +239,6 @@ void createHexagon(Form f) {
     glFlush();
 }
 
-// Círculo
 void createCircle(Form f) {
     float cx = f->x + f->xSize / 2;
     float cy = f->y + f->ySize / 2;
@@ -200,15 +246,13 @@ void createCircle(Form f) {
 
     glColor3f(f->r, f->g, f->b);
     glBegin(GL_TRIANGLE_FAN);
-    glVertex2f(cx, cy); // centro
-
-    for (int i = 0; i <= 50; i++) { // 50 segmentos
+    glVertex2f(cx, cy);
+    for (int i = 0; i <= 50; i++) {
         float angle = 2.0 * M_PI * i / 50;
         glVertex2f(cx + r * cos(angle), cy + r * sin(angle));
     }
     glEnd();
 
-    // Contorno
     glColor3f(f->rBorder, f->gBorder, f->bBorder);
     glLineWidth(2);
     glBegin(GL_LINE_LOOP);
@@ -217,11 +261,15 @@ void createCircle(Form f) {
         glVertex2f(cx + r * cos(angle), cy + r * sin(angle));
     }
     glEnd();
+
     glFlush();
 }
 
-void drawForm(Form f) {
 
+void drawForm(Form f) {
+    printf("\n----------------------------------------\n");
+	printf("Has Active Colour: %d", hasActiveColor);
+    printf("\n----------------------------------------\n");
     switch (f->formType) {
         case 0:
 			createRetangle(f);
@@ -246,8 +294,6 @@ void drawForm(Form f) {
             break;
     }
 }
-
-// --- random initialization ---
 
 void initRandomForms(Form forms[], int n, int w, int h) {
     srand((unsigned int)time(NULL));
@@ -292,31 +338,57 @@ void initRandomForms(Form forms[], int n, int w, int h) {
     }
 }
 
-int addRandomForm(Form forms[], int n, int w, int h) {
+int addRandomForm(Form forms[], Form  palleteForm[], int n, int w, int h) {
     for (int i = 0; i < n; i++) {
-        if (forms[i] == NULL) {  
+        if (forms[i] == NULL) {
+
             int formType = rand() % formTypeN;
             float size = ((float)rand() / RAND_MAX) * 100.0 + 30.0;
-            float x = ((float)rand() / RAND_MAX) * (w - size);
-            float y = ((float)rand() / RAND_MAX) * (h - size);
+            float x, y;
+            int attempts = 0;
+            Form temp = NULL;
 
-            forms[i] = newForm(x, y, size, size, formType);
-            printfForm(forms[i]);
+            do {
+                x = ((float)rand() / RAND_MAX) * (w - size);
+                y = ((float)rand() / RAND_MAX) * (h - size);
+
+                if (temp) deleteForm(temp);
+                temp = newForm(x, y, size, size, formType);
+                attempts++;
+
+            } while ((overlapsAny(temp, forms, n) || overlapsAnyPalette(temp, palleteForm, palleteFormN)) 
+         && attempts < 100);
+
+
+            if (attempts >= 100) {
+                printf("Nao encontrei espaco livre para nova figura.\n");
+                deleteForm(temp);
+                return -1;
+            }
+
+            forms[i] = temp;
+            printf("Figura criada sem colisoes.\n");
             return 1;
         }
     }
     return -1;
 }
 
-int addFormAT(Form forms[], int n, int w, int h, int x, int y) {
+int addFormAT(Form forms[], Form palleteForm[], int n, int w, int h, int x, int y) {
     for (int i = 0; i < n; i++) {
         if (forms[i] == NULL) {
             int formType = rand() % formTypeN;
             float size = ((float)rand() / RAND_MAX) * 100.0 + 30.0;
-            float recX = x;
-            float recY = y;
 
-            forms[i] = newForm(x, y, size, size, formType);
+            Form temp = newForm(x, y, size, size, formType);
+
+ 
+            if (overlapsAnyPalette(temp, palleteForm, palleteFormN)) {
+                deleteForm(temp);
+                return -1;
+            }
+
+            forms[i] = temp;
             printfForm(forms[i]);
             return 1;
         }
@@ -354,6 +426,91 @@ int formExistsAt(Form forms[], int n, int x, int y) {
         if (forms[i]->x == x && forms[i]->y == y) {
 			return 1;
         }
+    }
+    return 0;
+}
+
+void createPaleteForms(Form forms[]) {
+    float size = 80;
+    float y = 10;
+
+    for (int i = 0; i < palleteFormN; i++) {
+        forms[i] = (Form)malloc(sizeof(struct form));
+        float x = 10 + i * (size + 10.0);
+
+        forms[i]->x = x;
+        forms[i]->y = y;
+        forms[i]->xSize = size;
+        forms[i]->ySize = size;
+
+        switch (i) {
+        case 0:
+            forms[i]->r = 1; forms[i]->g = 0; forms[i]->b = 0; // vermelho
+            break;
+        case 1:
+            forms[i]->r = 0; forms[i]->g = 1; forms[i]->b = 0; // verde
+            break;
+        case 2:
+            forms[i]->r = 0; forms[i]->g = 0; forms[i]->b = 1; // azul
+            break;
+        }
+
+        forms[i]->rBorder = 1;
+        forms[i]->gBorder = 1;
+        forms[i]->bBorder = 1;
+        forms[i]->formType = SQUARE;
+    }
+}
+
+void drawPalette(Form forms[]) {
+    for (int i = 0; i < palleteFormN; i++) {
+        if (forms[i]) createSquare(forms[i]);
+    }
+}
+
+int overlapsAnyPalette(Form newForm, Form paletteForms[], int n) {
+    for (int i = 0; i < n; i++) {
+        if (paletteForms[i] && formsOverlap(newForm, paletteForms[i])) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int paletteColorSelected(Form palleteForms[], int x, int y) {
+    for (int i = 0; i < palleteFormN; i++) {
+		Form f = palleteForms[i];
+         if(f){
+             if (x >= f->x && x <= f->x + f->xSize && y >= f->y && y <= f->y + f->ySize) {
+                 return i + 1; 
+             }
+		 }
+    }
+	return 0;
+}
+
+int selectPalleteColor(Form palleteForms[], int i) {
+    if (i != 0) {
+        Form f = palleteForms[i - 1];
+        f->rBorder = 0;
+        f->gBorder = 1;
+        f->bBorder = 0;
+        
+        hasActiveColor = 1;
+
+        r = f->r;
+		g = f->g;
+		b = f->b;
+
+        for (int j = 0; j < palleteFormN; j++) {
+            if (j != i - 1) {
+                Form other = palleteForms[j];
+                other->rBorder = 1;
+                other->gBorder = 1;
+                other->bBorder = 1;
+            }
+		}
+        return 1;
     }
     return 0;
 }
