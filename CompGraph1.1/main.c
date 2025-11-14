@@ -145,13 +145,13 @@ void mouse(int button, int state, int x, int y) {
             dragCurrentX = x;
             dragCurrentY = invertedY;
 
-            printf("Movendo forma %d de (%.2f, %.2f)\n", formIndex, originalFormX, originalFormY);
+            printf("A deslocar Forma %d de (%.2f, %.2f)\n", formIndex, originalFormX, originalFormY);
             printf("Offset: (%.2f, %.2f)\n", dragOffsetX, dragOffsetY);
             return;
         }
 
         if (invertedY > toolbarBottom) {
-            printf("Zona de ferramentas: nao e possivel criar formas aqui\n");
+            printf("Ferramentas: nao e possivel criar formas nesta posicao\n");
             return;
         }
 
@@ -176,7 +176,7 @@ void mouse(int button, int state, int x, int y) {
                 float newX = dragCurrentX - dragOffsetX;
                 float newY = dragCurrentY - dragOffsetY;
 
-                printf("Tentando mover para (%.2f, %.2f)\n", newX, newY);
+                printf("Tentativa de movimento para (%.2f, %.2f)\n", newX, newY);
 
                 moveForm(f, newX, newY);
 
@@ -218,7 +218,7 @@ void mouse(int button, int state, int x, int y) {
                     printf("Forma demasiado pequena\n");
                 }
                 else if (y + ySize > toolbarBottom) {
-                    printf("Nao foi possivel criar forma na zona de ferramentas\n");
+                    printf("Nao foi possivel criar forma na area de ferramentas\n");
                 }
                 else {
                     int result = drawFormOnDrag(a, palleteForms, selectFormType,
@@ -251,7 +251,7 @@ void mouse(int button, int state, int x, int y) {
             glutPostRedisplay();
         }
         else {
-            printf("Nenhuma forma sob o cursor\n");
+            printf("Nenhuma forma sobre o cursor\n");
         }
     }
 }
@@ -289,7 +289,7 @@ void keyboard(unsigned char key, int x, int y) {
 
     if (key == 'g' || key == 'G') {
         dropFormsDown(a, N, workHeight);
-        printf("Formas cairam para baixo\n");
+        printf("Formas cairam!\n");
         glutPostRedisplay();
     }
 
@@ -301,13 +301,13 @@ void keyboard(unsigned char key, int x, int y) {
 
     if (key == 'l' || key == 'L') {
         dropFormsLeft(a, N);
-        printf("Formas foram para esquerda\n");
+        printf("Formas foram para  a esquerda\n");
         glutPostRedisplay();
     }
 
     if (key == 'r' || key == 'R') {
         dropFormsRight(a, N, W);
-        printf("Formas foram para direita\n");
+        printf("Formas foram para a direita\n");
         glutPostRedisplay();
     }
 
@@ -331,15 +331,15 @@ void keyboard(unsigned char key, int x, int y) {
     if (key == 'h' || key == 'H') {
         printf("\n=== AJUDA ===\n");
         printf("MOUSE:\n");
-        printf("  Esquerdo: Criar forma (drag) ou mover forma existente\n");
-        printf("  Direito: Apagar forma sob cursor\n");
+        printf("  Esquerdo: Criar forma (drag), mover forma existente\n");
+        printf("  Direito: Apagar forma sobre o cursor\n");
         printf("\nTECLADO:\n");
         printf("  D: Apagar forma sob cursor\n");
         printf("  B: Toggle bounding boxes\n");
-        printf("  G: Cair para baixo\n");
-        printf("  U: Cair para cima\n");
-        printf("  L: Cair para esquerda\n");
-        printf("  R: Cair para direita\n");
+        printf("  G: Cair Formas\n");
+        printf("  U: Subir Formas\n");
+        printf("  L: Mover formas a Esquerda\n");
+        printf("  R: Mover formas a direita\n");
         printf("  F: Inserir no maior espaco livre\n");
         printf("  H: Mostrar ajuda\n");
         printf("  Q: Sair\n");

@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\vitam\\source\\repos\\agvelez07\\ComputerGraphicsCU\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{AB9AB6EF-15C4-4678-AEF4-4B3DF8D984CD}|CompGraph1.1\\CompGraph1.1.vcxproj|C:\\Users\\vitam\\source\\repos\\agvelez07\\ComputerGraphicsCU\\CompGraph1.1\\form.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{AB9AB6EF-15C4-4678-AEF4-4B3DF8D984CD}|CompGraph1.1\\CompGraph1.1.vcxproj|solutionrelative:CompGraph1.1\\form.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{AB9AB6EF-15C4-4678-AEF4-4B3DF8D984CD}|CompGraph1.1\\CompGraph1.1.vcxproj|C:\\Users\\vitam\\source\\repos\\agvelez07\\ComputerGraphicsCU\\CompGraph1.1\\main.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{AB9AB6EF-15C4-4678-AEF4-4B3DF8D984CD}|CompGraph1.1\\CompGraph1.1.vcxproj|solutionrelative:CompGraph1.1\\main.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9AB6EF-15C4-4678-AEF4-4B3DF8D984CD}|CompGraph1.1\\CompGraph1.1.vcxproj|C:\\Users\\vitam\\source\\repos\\agvelez07\\ComputerGraphicsCU\\CompGraph1.1\\form.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{AB9AB6EF-15C4-4678-AEF4-4B3DF8D984CD}|CompGraph1.1\\CompGraph1.1.vcxproj|solutionrelative:CompGraph1.1\\form.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,17 +18,17 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "main.c",
               "DocumentMoniker": "C:\\Users\\vitam\\source\\repos\\agvelez07\\ComputerGraphicsCU\\CompGraph1.1\\main.c",
               "RelativeDocumentMoniker": "CompGraph1.1\\main.c",
               "ToolTip": "C:\\Users\\vitam\\source\\repos\\agvelez07\\ComputerGraphicsCU\\CompGraph1.1\\main.c",
               "RelativeToolTip": "CompGraph1.1\\main.c",
-              "ViewState": "AgIAAHcBAAAAAAAAAAAMwNMAAAAlAAAAAAAAAA==",
+              "ViewState": "AgIAADsBAAAAAAAAAAAAAJABAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
               "WhenOpened": "2025-10-07T10:44:06.969Z",
               "IsPinned": true,
@@ -36,7 +36,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "form.c",
               "DocumentMoniker": "C:\\Users\\vitam\\source\\repos\\agvelez07\\ComputerGraphicsCU\\CompGraph1.1\\form.c",
               "RelativeDocumentMoniker": "CompGraph1.1\\form.c",
@@ -44,8 +44,7 @@
               "RelativeToolTip": "CompGraph1.1\\form.c",
               "ViewState": "AgIAAJQDAAAAAAAAAAAcwJ8DAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
-              "WhenOpened": "2025-10-07T10:50:29.216Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-07T10:50:29.216Z"
             }
           ]
         }
