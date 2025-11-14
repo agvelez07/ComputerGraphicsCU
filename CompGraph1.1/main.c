@@ -15,7 +15,7 @@ int winH = 480;
 
 Form a[N];
 Form palleteForms[3];
-Form selectFormType[7];
+Form selectFormType[8];
 
 int nActiveForms = 0;
 int isDragging = 0;

@@ -11,7 +11,7 @@
 
 float r = 0, g = 0, b = 0;
 
-int formTypeN = 7;
+int formTypeN = 8;
 int palleteFormN = 3;
 
 int hasActiveColor = 0;
@@ -27,7 +27,8 @@ typedef enum formType {
     LINE,
     EQUILATERAL_TRIANGLE,
     HEXAGON,
-    CIRCLE
+    CIRCLE,
+    CLOUD
 } FormType;
 
 struct form {
@@ -410,22 +411,30 @@ void createEquilateralTriangle(Form f) {
 void createHexagon(Form f) {
     float cx = f->x + f->xSize / 2.0;
     float cy = f->y + f->ySize / 2.0;
+    
     float radius = fmin(f->xSize / 2.0, f->ySize / 2.0);
     float start = M_PI / 6.0;
+   
     glColor3f(f->r, f->g, f->b);
     glBegin(GL_POLYGON);
+    
     for (int i = 0; i < 6; ++i) {
         float angle = start + (2.0 * M_PI * i) / 6.0;
         glVertex2f(cx + radius * cos(angle), cy + radius * sin(angle));
     }
+    
     glEnd();
+    
     if (showBoundingBoxes) {
+    
         glColor3f(f->rBorder, f->gBorder, f->bBorder);
         glBegin(GL_LINE_LOOP);
+        
         for (int i = 0; i < 6; ++i) {
             float angle = start + (2.0 * M_PI * i) / 6.0;
             glVertex2f(cx + radius * cos(angle), cy + radius * sin(angle));
         }
+        
         glEnd();
     }
 }
@@ -434,14 +443,18 @@ void createCircle(Form f) {
     float cx = f->x + f->xSize / 2;
     float cy = f->y + f->ySize / 2;
     float radius = f->xSize / 2;
+    
     glColor3f(f->r, f->g, f->b);
     glBegin(GL_TRIANGLE_FAN);
     glVertex2f(cx, cy);
+    
     for (int i = 0; i <= 50; i++) {
         float angle = 2 * M_PI * i / 50;
         glVertex2f(cx + radius * cos(angle), cy + radius * sin(angle));
     }
+    
     glEnd();
+    
     if (showBoundingBoxes) {
         glColor3f(f->rBorder, f->gBorder, f->bBorder);
         glBegin(GL_LINE_LOOP);
@@ -453,15 +466,66 @@ void createCircle(Form f) {
     }
 }
 
+void createCircleAt(float cx, float cy, float radius) {
+    glBegin(GL_TRIANGLE_FAN);
+    glVertex2f(cx, cy);
+    for (int i = 0; i <= 50; i++) {
+        float angle = 2 * M_PI * i / 50;
+        glVertex2f(cx + radius * cos(angle), cy + radius * sin(angle));
+    }
+    glEnd();
+}
+
+void createCloud(Form f) {
+    float cx = f->x + f->xSize * 0.5f;
+    float cy = f->y + f->ySize * 0.45f;
+
+    float radius = f->xSize * 0.35f;
+    float offset = f->xSize * 0.25f;
+
+    glColor3f(f->r, f->g, f->b);
+
+    createCircleAt(cx, cy, radius);
+    createCircleAt(cx - offset, cy, radius * 0.85f);
+    createCircleAt(cx + offset, cy, radius * 0.85f);
+
+    if (showBoundingBoxes) {
+        glColor3f(f->rBorder, f->gBorder, f->bBorder);
+        glBegin(GL_LINE_LOOP);
+        glVertex2f(f->x, f->y);
+        glVertex2f(f->x + f->xSize, f->y);
+        glVertex2f(f->x + f->xSize, f->y + f->ySize);
+        glVertex2f(f->x, f->y + f->ySize);
+        glEnd();
+    }
+}
+
 void drawForm(Form f) {
     switch (f->formType) {
-    case RECTANGLE: createRetangle(f); break;
-    case SQUARE: createSquare(f); break;
-    case ISOSCELES_TRIANGLE: createIsocelesTriangle(f); break;
-    case LINE: createLine(f); break;
-    case EQUILATERAL_TRIANGLE: createEquilateralTriangle(f); break;
-    case HEXAGON: createHexagon(f); break;
-    case CIRCLE: createCircle(f); break;
+    case RECTANGLE:
+         createRetangle(f);
+         break;
+    case SQUARE:
+        createSquare(f);
+        break;
+    case ISOSCELES_TRIANGLE:
+        createIsocelesTriangle(f);
+        break;
+    case LINE:
+        createLine(f);
+        break;
+    case EQUILATERAL_TRIANGLE:
+        createEquilateralTriangle(f);
+        break;
+    case HEXAGON:
+        createHexagon(f);
+        break;
+    case CIRCLE:
+        createCircle(f);
+        break;
+    case CLOUD:
+        createCloud(f);
+        break;
     }
 }
 
@@ -564,8 +628,9 @@ void createFormsToSelect(Form forms[], int w, int h) {
     float startX = (margin + 3 * (size + margin)) + size * 0.5;
 
 
-    FormType shapeOrder[7] = {
+    FormType shapeOrder[8] = {
         CIRCLE,
+        CLOUD,
         HEXAGON,
         EQUILATERAL_TRIANGLE,
         ISOSCELES_TRIANGLE,
